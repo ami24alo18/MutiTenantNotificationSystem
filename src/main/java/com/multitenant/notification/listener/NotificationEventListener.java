@@ -1,6 +1,8 @@
 package com.multitenant.notification.listener;
 
 import com.multitenant.notification.delivery.Delivery;
+import com.multitenant.notification.delivery.DeliveryAttempt;
+import com.multitenant.notification.delivery.DeliveryAttemptRepository;
 import com.multitenant.notification.delivery.DeliveryRepository;
 import com.multitenant.notification.delivery.DeliveryStatus;
 import com.multitenant.notification.event.NotificationEvent;
@@ -16,10 +18,12 @@ import org.springframework.stereotype.Component;
 public class NotificationEventListener {
 
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryAttemptRepository deliveryAttemptRepository;
     private final RetryService retryService;
 
-    public NotificationEventListener(DeliveryRepository deliveryRepository, RetryService retryService) {
+    public NotificationEventListener(DeliveryRepository deliveryRepository, DeliveryAttemptRepository deliveryAttemptRepository, RetryService retryService) {
         this.deliveryRepository = deliveryRepository;
+        this.deliveryAttemptRepository = deliveryAttemptRepository;
         this.retryService = retryService;
     }
 
@@ -40,9 +44,21 @@ public class NotificationEventListener {
             delivery.setSentAt(LocalDateTime.now());
             deliveryRepository.save(delivery);
             log.info("Notification sent successfully for delivery ID: {}", delivery.getId());
+            saveAttempt(delivery, true, "OK");
         } catch (Exception e) {
             log.error("Notification failed for delivery ID: {}. Error: {}", delivery.getId(), e.getMessage());
+            saveAttempt(delivery, false, e.getMessage());
             retryService.scheduleRetry(delivery);
         }
+    }
+
+    private void saveAttempt(Delivery delivery, boolean success, String responseMessage) {
+        DeliveryAttempt attempt = DeliveryAttempt.builder()
+                .delivery(delivery)
+                .attemptTimestamp(LocalDateTime.now())
+                .success(success)
+                .responseMessage(responseMessage)
+                .build();
+        deliveryAttemptRepository.save(attempt);
     }
 }
