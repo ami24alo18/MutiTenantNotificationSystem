@@ -22,6 +22,16 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+app:
+  jwt:
+    secret: "change-me-phase2-local-dev-secret-key-32chars-min"
+    expiration-ms: 3600000
+  bootstrap:
+    platform-admin:
+      email: platform.admin@system.local
+      password: Admin@123
+      full-name: Platform Administrator
+
 server:
   port: 8080
   error:

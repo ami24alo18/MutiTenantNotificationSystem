@@ -20,3 +20,13 @@ spring:
   h2:
     console:
       enabled: false
+
+app:
+  jwt:
+    secret: "test-secret-key-which-is-long-enough-for-hs256-alg"
+    expiration-ms: 3600000
+  bootstrap:
+    platform-admin:
+      email: platform.admin@system.local
+      password: Admin@123
+      full-name: Platform Administrator

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,6 +38,19 @@ public class GlobalExceptionHandler {
 				request.getRequestURI()
 		);
 		return ResponseEntity.status(ex.getStatus()).body(body);
+	}
+
+	@ExceptionHandler(AuthorizationDeniedException.class)
+	public ResponseEntity<ErrorResponse> handleAuthorizationDenied(
+			AuthorizationDeniedException ex,
+			HttpServletRequest request
+	) {
+		ErrorResponse body = new ErrorResponse(
+				ErrorCode.FORBIDDEN.getCode(),
+				"Access denied",
+				request.getRequestURI()
+		);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

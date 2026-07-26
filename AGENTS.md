@@ -59,4 +59,8 @@ Suggested commit messages per phase are listed above.
 
 ## Skills used during development
 
-Project-local skill notes live under `.cursor/skills/` and capture conventions applied while building each phase.
+Project-local skill notes live under `.cursor/skills/` and capture conventions applied while building each phase:
+
+- `phase-gated-delivery`
+- `spring-boot-foundation`
+- `auth-rbac`

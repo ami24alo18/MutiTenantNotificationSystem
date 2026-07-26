@@ -2,39 +2,33 @@
 
 Spring Boot service for multi-tenant notifications across email, SMS, push, and in-app channels.
 
-## Phase 1 status
+## Current status
 
-**Completed:** project foundation only (no business logic).
+**Completed through Phase 2:** foundation + authentication & RBAC.
 
-| Capability | Status |
-|---|---|
-| Spring Boot + Maven project | Done |
-| PostgreSQL + Flyway | Done |
-| Base packages | Done |
-| Global exception handling | Done |
-| Validation framework | Done |
-| Common API response models | Done |
-| Health endpoint | Done |
-
-Later phases (auth, templates, channels, delivery, retries, rate limiting) are intentionally deferred.
+| Phase | Capability | Status |
+|---|---|---|
+| 1 | Project foundation, Flyway, health, error handling | Done |
+| 2 | JWT auth, roles, tenant/user CRUD | Done |
+| 3+ | Templates, channels, notifications, retries, rate limits | Not started |
 
 ## Tech stack
 
 - Java 25
 - Spring Boot 4.1
 - Spring Data JPA
+- Spring Security + JWT (JJWT)
 - PostgreSQL
-- Flyway
+- Flyway (`spring-boot-starter-flyway`)
 - Maven
-- Bean Validation (`spring-boot-starter-validation`)
-- Spring Actuator (health/info)
-- Flyway via `spring-boot-starter-flyway` (required for Spring Boot 4 autoconfiguration)
+- Bean Validation
+- Spring Actuator
 
 ## Prerequisites
 
 - JDK 25+
 - Maven 3.9+
-- PostgreSQL 14+ listening on `localhost:5432`
+- PostgreSQL 14+ on `localhost:5432`
 
 ### Database setup
 
@@ -44,41 +38,70 @@ CREATE DATABASE notification_db OWNER notification;
 GRANT ALL PRIVILEGES ON DATABASE notification_db TO notification;
 ```
 
-Credentials are configured in `src/main/resources/application.yml` (local defaults for Phase 1).
-
 ## Run
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Application listens on `http://localhost:8080`.
+App: `http://localhost:8080`
 
-### Health checks
+### Bootstrap platform admin
 
-- Application probe: `GET /api/v1/health`
-- Actuator: `GET /actuator/health`
+On first startup (when no `PLATFORM_ADMIN` exists), the service creates:
 
-Example:
+- Email: `platform.admin@system.local`
+- Password: `Admin@123`
+
+Configured under `app.bootstrap.platform-admin` in `application.yml`.
+
+### Health
 
 ```bash
 curl http://localhost:8080/api/v1/health
 ```
 
-## Tests
+### Login
 
-Tests use an in-memory H2 database (`test` profile) so PostgreSQL is not required for CI-style local runs:
+```bash
+curl -s -X POST http://localhost:8080/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"platform.admin@system.local","password":"Admin@123"}'
+```
+
+Use the returned `accessToken` as `Authorization: Bearer <token>`.
+
+## Phase 2 APIs
+
+| Method | Path | Access |
+|---|---|---|
+| POST | `/api/v1/auth/login` | Public |
+| GET/POST | `/api/v1/tenants` | Platform admin (tenant admin: GET own only) |
+| GET/PUT/DELETE | `/api/v1/tenants/{id}` | Platform admin (tenant admin: GET own) |
+| GET/POST | `/api/v1/users` | Platform / tenant admin (scoped) |
+| GET/PUT/DELETE | `/api/v1/users/{id}` | Platform / tenant admin (scoped) |
+
+### Role rules
+
+- `PLATFORM_ADMIN`: no tenant; manages all tenants and users.
+- `TENANT_ADMIN`: belongs to one tenant; manages users in that tenant only; cannot create/update/delete tenants.
+
+Deletes are soft (`active=false`).
+
+## Tests
 
 ```bash
 ./mvnw test
 ```
 
+Tests use H2 (`test` profile).
+
 ## Project structure
 
 ```
 com.multitenant.notification
-├── auth/            # Phase 2
-├── tenant/          # Phase 2
+├── auth/            # JWT, security, users, login
+├── tenant/          # Tenant CRUD
 ├── template/        # Phase 3
 ├── channel/         # Phase 4
 ├── notification/    # Phase 5+
@@ -88,14 +111,16 @@ com.multitenant.notification
 └── health/          # Health API
 ```
 
-## Assumptions (Phase 1)
+## Assumptions
 
-1. Single deployable Spring Boot monolith (no microservices).
-2. PostgreSQL is the system of record; Flyway owns schema evolution (`ddl-auto=validate`).
-3. API responses use a consistent envelope (`ApiResponse` / `ErrorResponse`).
-4. Package name uses `notification` (corrected from the initial Spring Initializr typo `notificatin`).
-5. H2 is test-only; production/local runtime targets PostgreSQL.
+1. Single Spring Boot monolith (no microservices).
+2. Flyway owns schema; JPA `ddl-auto=validate`.
+3. Consistent API envelopes (`ApiResponse` / `ErrorResponse`).
+4. Email is globally unique and is the login identifier.
+5. Platform admins are not tenant-scoped; tenant admins must belong to a tenant.
+6. JWT HMAC secret is local-dev only (`app.jwt.secret`) — replace before any shared environment.
+7. H2 is test-only; runtime uses PostgreSQL.
 
 ## Agent guidance
 
-See [AGENTS.md](AGENTS.md) for phased delivery rules and development conventions.
+See [AGENTS.md](AGENTS.md) for phased delivery rules.

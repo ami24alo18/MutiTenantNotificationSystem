@@ -25,3 +25,13 @@ description: Enforce incremental phase delivery for the multi-tenant notificatio
 - Health endpoint
 - Application starts successfully
 - No business/domain logic
+
+## Phase 2 checklist
+
+- User and Tenant entities
+- Roles: PLATFORM_ADMIN, TENANT_ADMIN
+- JWT authentication + Spring Security
+- Login API
+- User CRUD
+- Tenant CRUD
+- No notification logic
