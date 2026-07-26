@@ -1,10 +1,10 @@
 package com.multitenant.notification.delivery;
 
 public enum DeliveryStatus {
-    PENDING,
-    SCHEDULED,
-    SENT,
-    FAILED,
-    DELIVERED,
-    RETRY
+	PENDING,
+	SCHEDULED,
+	PROCESSING,
+	SENT,
+	FAILED,
+	RETRY
 }

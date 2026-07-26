@@ -31,6 +31,18 @@ app:
       email: platform.admin@system.local
       password: Admin@123
       full-name: Platform Administrator
+  async:
+    core-pool-size: 4
+    max-pool-size: 8
+    queue-capacity: 100
+  retry:
+    max-attempts: 5
+    initial-delay-ms: 1000
+    max-delay-ms: 60000
+    poll-interval-ms: 2000
+  rate-limiting:
+    enabled: true
+    permits-per-second: 20
 
 server:
   port: 8080

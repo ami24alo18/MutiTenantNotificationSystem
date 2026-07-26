@@ -1,4 +1,4 @@
 /**
- * Delivery records, status tracking, retries, and audit trail (Phase 5+).
+ * Delivery records, attempts, status tracking, and audit trail.
  */
 package com.multitenant.notification.delivery;

@@ -1,2 +1,0 @@
--- Add SCHEDULED status to the delivery status enum
--- No schema changes required as status is a VARCHAR

@@ -66,3 +66,4 @@ Project-local skill notes live under `.cursor/skills/` and capture conventions a
 - `auth-rbac`
 - `template-management`
 - `channel-configuration`
+- (phases 5–11 repaired in-place against UUID tenancy + JWT)
