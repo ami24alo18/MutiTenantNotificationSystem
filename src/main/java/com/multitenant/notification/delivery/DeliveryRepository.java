@@ -1,7 +1,7 @@
-package com.multitenant.notificatin.system.repository;
+package com.multitenant.notification.delivery;
 
-import com.multitenant.notificatin.system.model.Delivery;
-import com.multitenant.notificatin.system.model.DeliveryStatus;
+import com.multitenant.notification.delivery.Delivery;
+import com.multitenant.notification.delivery.DeliveryStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

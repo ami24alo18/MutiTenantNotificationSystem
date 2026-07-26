@@ -1,0 +1,3 @@
+ALTER TABLE deliveries
+ADD COLUMN retry_attempts INT NOT NULL DEFAULT 0,
+ADD COLUMN next_retry_at TIMESTAMP;

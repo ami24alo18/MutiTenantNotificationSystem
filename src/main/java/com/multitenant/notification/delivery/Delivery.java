@@ -1,4 +1,4 @@
-package com.multitenant.notificatin.system.model;
+package com.multitenant.notification.delivery;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,4 +1,4 @@
-package com.multitenant.notificatin.system.model;
+package com.multitenant.notification.delivery;
 
 public enum DeliveryStatus {
     PENDING,

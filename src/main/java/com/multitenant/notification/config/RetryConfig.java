@@ -1,0 +1,15 @@
+package com.multitenant.notification.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "notification.retry")
+public class RetryConfig {
+
+    private int maxAttempts;
+    private long initialDelayMs;
+    private long maxDelayMs;
+}

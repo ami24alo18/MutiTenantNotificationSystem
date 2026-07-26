@@ -1,10 +1,10 @@
-package com.multitenant.notificatin.system.listener;
+package com.multitenant.notification.listener;
 
-import com.multitenant.notificatin.system.event.NotificationEvent;
-import com.multitenant.notificatin.system.model.Delivery;
-import com.multitenant.notificatin.system.model.DeliveryStatus;
-import com.multitenant.notificatin.system.repository.DeliveryRepository;
-import com.multitenant.notificatin.system.service.RetryService;
+import com.multitenant.notification.delivery.Delivery;
+import com.multitenant.notification.delivery.DeliveryRepository;
+import com.multitenant.notification.delivery.DeliveryStatus;
+import com.multitenant.notification.event.NotificationEvent;
+import com.multitenant.notification.service.RetryService;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
