@@ -2,6 +2,7 @@ package com.multitenant.notification.template;
 
 import com.multitenant.notification.auth.Role;
 import com.multitenant.notification.auth.UserPrincipal;
+import com.multitenant.notification.channel.NotificationChannel;
 import com.multitenant.notification.common.exception.ForbiddenException;
 import com.multitenant.notification.template.dto.CreateTemplateRequest;
 import com.multitenant.notification.tenant.TenantRepository;
@@ -49,7 +50,7 @@ class NotificationTemplateServiceTest {
 		CreateTemplateRequest request = new CreateTemplateRequest(
 				"welcome-email",
 				"Welcome",
-				TemplateChannel.EMAIL,
+				NotificationChannel.EMAIL,
 				"Hello",
 				"Body",
 				otherTenantId

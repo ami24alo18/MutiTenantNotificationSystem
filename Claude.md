@@ -9,4 +9,4 @@ Follow the phased delivery rules in `AGENTS.md` exactly:
 - Do not add out-of-scope infrastructure (Docker, Kafka, Redis, etc.) unless a later phase requires it.
 - Prefer clean architecture, SOLID, Flyway-owned schema, and consistent API error envelopes.
 
-Current completed phase: **Phase 3 – Template Management**.
+Current completed phase: **Phase 4 – Channel Configuration**.

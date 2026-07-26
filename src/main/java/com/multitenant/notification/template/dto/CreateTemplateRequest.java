@@ -1,6 +1,6 @@
 package com.multitenant.notification.template.dto;
 
-import com.multitenant.notification.template.TemplateChannel;
+import com.multitenant.notification.channel.NotificationChannel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +22,7 @@ public record CreateTemplateRequest(
 		String name,
 
 		@NotNull(message = "channel is required")
-		TemplateChannel channel,
+		NotificationChannel channel,
 
 		@Size(max = 500, message = "subject must be at most 500 characters")
 		String subject,

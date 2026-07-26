@@ -1,7 +1,7 @@
 package com.multitenant.notification.template.dto;
 
 import com.multitenant.notification.template.NotificationTemplate;
-import com.multitenant.notification.template.TemplateChannel;
+import com.multitenant.notification.channel.NotificationChannel;
 import com.multitenant.notification.template.TemplateVariableProcessor;
 
 import java.time.Instant;
@@ -13,7 +13,7 @@ public record TemplateResponse(
 		UUID tenantId,
 		String code,
 		String name,
-		TemplateChannel channel,
+		NotificationChannel channel,
 		String subject,
 		String body,
 		List<String> variables,

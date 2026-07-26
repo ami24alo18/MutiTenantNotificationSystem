@@ -44,3 +44,11 @@ description: Enforce incremental phase delivery for the multi-tenant notificatio
 - Validation (syntax, EMAIL subject, unique code per tenant)
 - Tenant isolation
 - No send/dispatch logic
+
+## Phase 4 checklist
+
+- Channel configuration entity
+- EMAIL / SMS / PUSH / IN_APP
+- Enable/disable per tenant
+- Tenant-specific settings
+- No external provider dispatch

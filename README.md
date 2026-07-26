@@ -4,14 +4,15 @@ Spring Boot service for multi-tenant notifications across email, SMS, push, and 
 
 ## Current status
 
-**Completed through Phase 3:** foundation + auth/RBAC + template management.
+**Completed through Phase 4:** foundation + auth + templates + channel configuration.
 
 | Phase | Capability | Status |
 |---|---|---|
 | 1 | Project foundation, Flyway, health, error handling | Done |
 | 2 | JWT auth, roles, tenant/user CRUD | Done |
 | 3 | Notification templates, placeholders, tenant isolation | Done |
-| 4+ | Channels, notifications, retries, rate limits | Not started |
+| 4 | Per-tenant channel config (email/SMS/push/in-app) | Done |
+| 5+ | Notifications, retries, rate limits | Not started |
 
 ## Tech stack
 
@@ -125,6 +126,26 @@ curl -s -X POST http://localhost:8080/api/v1/templates \
   }'
 ```
 
+## Phase 4 APIs — channel configuration
+
+| Method | Path | Access |
+|---|---|---|
+| GET | `/api/v1/channels?tenantId=` | Platform (tenantId required) / tenant admin (own) |
+| GET | `/api/v1/channels/{channel}` | Same |
+| PUT | `/api/v1/channels/{channel}` | Upsert enable/disable + provider + settings |
+| PUT | `/api/v1/channels/{channel}/enabled` | Toggle only |
+
+Channels: `EMAIL`, `SMS`, `PUSH`, `IN_APP`. Missing configs are auto-created as disabled on first list/get.
+
+Required settings when enabling:
+
+| Channel | Required settings keys |
+|---|---|
+| EMAIL | `fromAddress` |
+| SMS | `senderId` |
+| PUSH | `appId` |
+| IN_APP | `retentionDays` (1–3650) |
+
 ## Tests
 
 ```bash
@@ -140,7 +161,7 @@ com.multitenant.notification
 ├── auth/            # JWT, security, users, login
 ├── tenant/          # Tenant CRUD
 ├── template/        # Template CRUD + placeholders
-├── channel/         # Phase 4
+├── channel/         # Channel enable/disable + settings
 ├── notification/    # Phase 5+
 ├── delivery/        # Phase 5+
 ├── common/          # Shared responses & exceptions
@@ -159,6 +180,7 @@ com.multitenant.notification
 7. H2 is test-only; runtime uses PostgreSQL.
 8. Template placeholders use `{{name}}`; malformed placeholders are rejected at write time.
 9. Template preview substitutes variables but does not send notifications (Phase 5+).
+10. Channel providers are configuration-only in Phase 4 (no external provider calls yet).
 
 ## Agent guidance
 

@@ -1,6 +1,5 @@
-package com.multitenant.notification.template;
+package com.multitenant.notification.channel;
 
-import com.multitenant.notification.channel.NotificationChannel;
 import com.multitenant.notification.tenant.Tenant;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,10 +19,13 @@ import java.util.UUID;
 
 @Entity
 @Table(
-		name = "notification_templates",
-		uniqueConstraints = @UniqueConstraint(name = "uq_templates_tenant_code", columnNames = {"tenant_id", "code"})
+		name = "channel_configurations",
+		uniqueConstraints = @UniqueConstraint(
+				name = "uq_channel_config_tenant_channel",
+				columnNames = {"tenant_id", "channel"}
+		)
 )
-public class NotificationTemplate {
+public class ChannelConfiguration {
 
 	@Id
 	private UUID id;
@@ -32,30 +34,18 @@ public class NotificationTemplate {
 	@JoinColumn(name = "tenant_id", nullable = false)
 	private Tenant tenant;
 
-	@Column(nullable = false, length = 100)
-	private String code;
-
-	@Column(nullable = false)
-	private String name;
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 32)
 	private NotificationChannel channel;
 
-	@Column(length = 500)
-	private String subject;
-
-	@Column(nullable = false, columnDefinition = "TEXT")
-	private String body;
-
-	/**
-	 * JSON array of placeholder names extracted from subject/body, e.g. {@code ["firstName","orderId"]}.
-	 */
-	@Column(nullable = false, length = 2000)
-	private String variables = "[]";
-
 	@Column(nullable = false)
-	private boolean active = true;
+	private boolean enabled = false;
+
+	@Column(length = 100)
+	private String provider;
+
+	@Column(name = "settings_json", nullable = false, length = 4000)
+	private String settingsJson = "{}";
 
 	@Column(name = "created_at", nullable = false)
 	private Instant createdAt;
@@ -94,22 +84,6 @@ public class NotificationTemplate {
 		this.tenant = tenant;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public NotificationChannel getChannel() {
 		return channel;
 	}
@@ -118,36 +92,28 @@ public class NotificationTemplate {
 		this.channel = channel;
 	}
 
-	public String getSubject() {
-		return subject;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	public String getBody() {
-		return body;
+	public String getProvider() {
+		return provider;
 	}
 
-	public void setBody(String body) {
-		this.body = body;
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 
-	public String getVariables() {
-		return variables;
+	public String getSettingsJson() {
+		return settingsJson;
 	}
 
-	public void setVariables(String variables) {
-		this.variables = variables;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setSettingsJson(String settingsJson) {
+		this.settingsJson = settingsJson;
 	}
 
 	public Instant getCreatedAt() {

@@ -1,6 +1,7 @@
 package com.multitenant.notification.template;
 
 import com.multitenant.notification.auth.UserPrincipal;
+import com.multitenant.notification.channel.NotificationChannel;
 import com.multitenant.notification.common.exception.ApiException;
 import com.multitenant.notification.common.exception.ConflictException;
 import com.multitenant.notification.common.exception.ErrorCode;
@@ -174,7 +175,7 @@ public class NotificationTemplateService {
 		return tenant;
 	}
 
-	private static void validateChannelContent(TemplateChannel channel, String subject, String body) {
+	private static void validateChannelContent(NotificationChannel channel, String subject, String body) {
 		if (body == null || body.isBlank()) {
 			throw new ApiException(
 					ErrorCode.VALIDATION_FAILED,
@@ -182,7 +183,7 @@ public class NotificationTemplateService {
 					"body is required"
 			);
 		}
-		if (channel == TemplateChannel.EMAIL && (subject == null || subject.isBlank())) {
+		if (channel == NotificationChannel.EMAIL && (subject == null || subject.isBlank())) {
 			throw new ApiException(
 					ErrorCode.VALIDATION_FAILED,
 					HttpStatus.BAD_REQUEST,
@@ -191,8 +192,8 @@ public class NotificationTemplateService {
 		}
 	}
 
-	private static String normalizeSubject(TemplateChannel channel, String subject) {
-		if (channel != TemplateChannel.EMAIL) {
+	private static String normalizeSubject(NotificationChannel channel, String subject) {
+		if (channel != NotificationChannel.EMAIL) {
 			return (subject == null || subject.isBlank()) ? null : subject.trim();
 		}
 		return subject.trim();

@@ -65,3 +65,4 @@ Project-local skill notes live under `.cursor/skills/` and capture conventions a
 - `spring-boot-foundation`
 - `auth-rbac`
 - `template-management`
+- `channel-configuration`
