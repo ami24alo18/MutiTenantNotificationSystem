@@ -64,3 +64,4 @@ Project-local skill notes live under `.cursor/skills/` and capture conventions a
 - `phase-gated-delivery`
 - `spring-boot-foundation`
 - `auth-rbac`
+- `template-management`

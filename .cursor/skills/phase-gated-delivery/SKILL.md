@@ -35,3 +35,12 @@ description: Enforce incremental phase delivery for the multi-tenant notificatio
 - User CRUD
 - Tenant CRUD
 - No notification logic
+
+## Phase 3 checklist
+
+- NotificationTemplate entity
+- Template CRUD APIs
+- Variable placeholders (`{{name}}`)
+- Validation (syntax, EMAIL subject, unique code per tenant)
+- Tenant isolation
+- No send/dispatch logic

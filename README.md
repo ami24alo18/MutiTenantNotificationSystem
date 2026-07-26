@@ -4,13 +4,14 @@ Spring Boot service for multi-tenant notifications across email, SMS, push, and 
 
 ## Current status
 
-**Completed through Phase 2:** foundation + authentication & RBAC.
+**Completed through Phase 3:** foundation + auth/RBAC + template management.
 
 | Phase | Capability | Status |
 |---|---|---|
 | 1 | Project foundation, Flyway, health, error handling | Done |
 | 2 | JWT auth, roles, tenant/user CRUD | Done |
-| 3+ | Templates, channels, notifications, retries, rate limits | Not started |
+| 3 | Notification templates, placeholders, tenant isolation | Done |
+| 4+ | Channels, notifications, retries, rate limits | Not started |
 
 ## Tech stack
 
@@ -88,6 +89,42 @@ Use the returned `accessToken` as `Authorization: Bearer <token>`.
 
 Deletes are soft (`active=false`).
 
+## Phase 3 APIs — templates
+
+| Method | Path | Access |
+|---|---|---|
+| POST | `/api/v1/templates` | Platform / tenant admin |
+| GET | `/api/v1/templates` | Platform (all) / tenant (own) |
+| GET | `/api/v1/templates/{id}` | Platform / owning tenant admin |
+| PUT | `/api/v1/templates/{id}` | Platform / owning tenant admin |
+| DELETE | `/api/v1/templates/{id}` | Platform / owning tenant admin (soft) |
+| POST | `/api/v1/templates/{id}/preview` | Platform / owning tenant admin |
+
+### Template rules
+
+- Placeholders use `{{variableName}}` syntax (letters, digits, underscore).
+- Variables are extracted from subject + body and returned on create/update.
+- `EMAIL` templates require a subject; other channels may omit it.
+- Channels: `EMAIL`, `SMS`, `PUSH`, `IN_APP`.
+- Code is unique per tenant.
+- Platform admins must pass `tenantId` when creating templates.
+- Tenant admins are locked to their own tenant (cross-tenant access returns 404).
+
+Example create:
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/templates \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "code":"welcome-email",
+    "name":"Welcome Email",
+    "channel":"EMAIL",
+    "subject":"Welcome {{firstName}}",
+    "body":"Hello {{firstName}}, your id is {{userId}}."
+  }'
+```
+
 ## Tests
 
 ```bash
@@ -102,7 +139,7 @@ Tests use H2 (`test` profile).
 com.multitenant.notification
 ├── auth/            # JWT, security, users, login
 ├── tenant/          # Tenant CRUD
-├── template/        # Phase 3
+├── template/        # Template CRUD + placeholders
 ├── channel/         # Phase 4
 ├── notification/    # Phase 5+
 ├── delivery/        # Phase 5+
@@ -120,6 +157,8 @@ com.multitenant.notification
 5. Platform admins are not tenant-scoped; tenant admins must belong to a tenant.
 6. JWT HMAC secret is local-dev only (`app.jwt.secret`) — replace before any shared environment.
 7. H2 is test-only; runtime uses PostgreSQL.
+8. Template placeholders use `{{name}}`; malformed placeholders are rejected at write time.
+9. Template preview substitutes variables but does not send notifications (Phase 5+).
 
 ## Agent guidance
 
