@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:notification_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  h2:
+    console:
+      enabled: false
+
+app:
+  jwt:
+    secret: "test-secret-key-which-is-long-enough-for-hs256-alg"
+    expiration-ms: 3600000
+  bootstrap:
+    platform-admin:
+      email: platform.admin@system.local
+      password: Admin@123
+      full-name: Platform Administrator
