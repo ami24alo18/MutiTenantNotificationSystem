@@ -1,0 +1,27 @@
+---
+name: phase-gated-delivery
+description: Enforce incremental phase delivery for the multi-tenant notification service. Use when implementing features, planning work, or deciding whether to continue to the next phase.
+---
+
+# Phase-Gated Delivery
+
+## Instructions
+
+1. Identify the phase the human explicitly requested.
+2. Implement only that phase's checklist items.
+3. Ensure the project compiles and relevant tests pass.
+4. Update README only if the phase adds a user-visible capability.
+5. Stop. Do not start the next phase until the human approves.
+
+## Phase 1 checklist
+
+- Spring Boot project structure
+- PostgreSQL + Flyway configuration
+- Initial migration
+- Base packages
+- Global exception handling
+- Validation framework
+- Common response models
+- Health endpoint
+- Application starts successfully
+- No business/domain logic
